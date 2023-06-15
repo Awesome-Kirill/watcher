@@ -1,80 +1,42 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"github.com/labstack/echo/v4"
 	"net/http"
-	"sync"
-	"time"
+	"os"
+	"os/signal"
+	"watcher/config"
+	"watcher/internal/cache"
+	"watcher/internal/site"
+	"watcher/internal/status"
+	"watcher/internal/transport/handler"
 )
 
-type Result struct {
-	IsAlive      bool
-	ResponseTime time.Duration
-}
-
-func GetSiteList() []string {
-	return []string{
-		"google.com", "youtube.com", "facebook.com", "baidu.com", "wikipedia.org", "qq.com", "taobao.com", "yahoo.com",
-		"tmall.com", "amazon.com", "google.co.in", "twitter.com", "sohu.com", "jd.com", "live.com", "instagram.com",
-		"sina.com.cn", "weibo.com", "google.co.jp", "reddit.com", "vk.com", "360.cn", "login.tmall.com", "blogspot.com",
-		"yandex.ru", "google.com.hk", "netflix.com", "linkedin.com", "pornhub.com", "google.com.br", "twitch.tv",
-		"pages.tmall.com", "csdn.net", "yahoo.co.jp", "mail.ru", "aliexpress.com", "alipay.com", "office.com",
-		"google.fr", "google.ru", "google.co.uk", "microsoftonline.com", "google.de", "ebay.com", "microsoft.com",
-		"livejasmin.com", "t.co", "bing.com", "xvideos.com", "google.ca",
-	}
-}
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	conf := config.New()
 
-	// todo Pointer or Value
-	cache := make(map[string]*Result)
+	sites := site.New(conf.PatchFile)
 
-	for _, s := range GetSiteList() {
+	c := http.DefaultClient
+	c.Timeout = conf.Timeout
+	stat := status.New(c)
 
-		cache[s] = &Result{}
-	}
+	job := cache.New(stat, sites, conf.TTL)
+	go job.Watch(ctx)
+	e := echo.New()
 
-	ticker := time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
+	h := handler.New(job)
+	e.GET("/stat/min", h.GetMin)
+	e.GET("/stat/min", h.GetMax)
+	e.GET("/stat/:id/site", h.GetSiteStat)
 
-	for {
-
-		select {
-		case <-ticker.C:
-			wg := sync.WaitGroup{}
-			client := http.DefaultClient
-			client.Timeout = 1 * time.Second
-			var mu sync.Mutex
-			for _, key := range GetSiteList() {
-				wg.Add(1)
-				go func(key string) {
-					defer wg.Done()
-					start := time.Now()
-
-					res, err := client.Head("https://" + key)
-
-					total := time.Since(start)
-					if err != nil {
-						return
-					}
-					defer res.Body.Close()
-
-					var isAlive bool
-					if res.StatusCode <= 300 {
-						isAlive = true
-					}
-
-					mu.Lock()
-					cache[key] = &Result{
-						IsAlive:      isAlive,
-						ResponseTime: total,
-					}
-					mu.Unlock()
-				}(key)
-
-			}
-
-			wg.Wait()
-			fmt.Printf("Done")
-		}
-	}
+	e.Start(":1323")
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch)
+	s := <-ch
+	cancel()
+	fmt.Println("Got signal:", s)
 }
