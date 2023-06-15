@@ -1,10 +1,10 @@
 package site
 
 import (
+	"bufio"
 	"context"
 	"log"
 	"os"
-	"strings"
 )
 
 type Site struct {
@@ -15,15 +15,22 @@ func (s *Site) GetSites(ctx context.Context) ([]string, error) {
 	return s.sits, nil
 }
 func New(path string) *Site {
-
-	data, err := os.ReadFile(path)
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer file.Close()
 
-	//todo bufio.ScanLines()
-	list := strings.Split(string(data), "\n")
+	var site Site
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		site.sits = append(site.sits, scanner.Text())
+	}
 
-	return &Site{sits: list}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	return &site
 
 }

@@ -2,16 +2,17 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 	"watcher/config"
 	"watcher/internal/cache"
 	"watcher/internal/site"
 	"watcher/internal/status"
 	"watcher/internal/transport/handler"
+
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -20,9 +21,7 @@ func main() {
 
 	sites := site.New(conf.PatchFile)
 
-	c := http.DefaultClient
-	c.Timeout = conf.Timeout
-	stat := status.New(c)
+	stat := status.New(conf.Timeout)
 
 	job := cache.New(stat, sites, conf.TTL)
 	go job.Watch(ctx)
@@ -33,10 +32,19 @@ func main() {
 	e.GET("/stat/min", h.GetMax)
 	e.GET("/stat/:id/site", h.GetSiteStat)
 
-	e.Start(":1323")
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch)
-	s := <-ch
+	// Start server
+	go func() {
+		if err := e.Start(conf.ServerAddress); err != nil && err != http.ErrServerClosed {
+			e.Logger.Fatal("shutting down the server")
+		}
+	}()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
 	cancel()
-	fmt.Println("Got signal:", s)
+	ctxShutdown, cancelShutdown := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelShutdown()
+	if err := e.Shutdown(ctxShutdown); err != nil {
+		e.Logger.Fatal(err)
+	}
 }

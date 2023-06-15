@@ -57,9 +57,7 @@ func (c *Cache) update(ctx context.Context) {
 				ResponseTime: finish,
 			}
 			c.mu.Unlock()
-
 		}(url)
-
 	}
 
 	wg.Wait()
@@ -68,8 +66,7 @@ func (c *Cache) update(ctx context.Context) {
 
 // todo error when
 // todo start ticker
-func (c *Cache) Watch(ctx context.Context) error {
-
+func (c *Cache) Watch(ctx context.Context) {
 	ticker := time.NewTicker(c.ttl)
 	defer ticker.Stop()
 
@@ -78,11 +75,11 @@ func (c *Cache) Watch(ctx context.Context) error {
 		c.minMax()
 		select {
 		case <-ctx.Done():
-			return ctx.Err()
+			log.Println(ctx.Err())
+			return
 		case <-ticker.C:
 			continue
 		}
-
 	}
 }
 
@@ -105,7 +102,6 @@ func (c *Cache) GetUrl(url string) (Info, error) {
 	return Info{}, SiteNotFound
 }
 func (c *Cache) minMax() {
-
 	siteInfo := make([]InfoWithName, 0, len(c.data))
 	for name, info := range c.data {
 		siteInfo = append(siteInfo, InfoWithName{
@@ -133,7 +129,6 @@ func (c *Cache) minMax() {
 }
 
 func New(stater Stater, sited Sited, ttl time.Duration) *Cache {
-
 	return &Cache{
 		ttl:    ttl,
 		stater: stater,

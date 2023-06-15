@@ -2,18 +2,24 @@ package status
 
 import (
 	"context"
+	"crypto/tls"
 	"log"
 	"net/http"
 	"time"
 )
 
-// todo почитай как делать http Request
+// todo почитай как делать http
+// todo http.Client or *http.Client
 type Status struct {
-	client *http.Client
+	client http.Client
 }
 
-func New(client *http.Client) *Status {
-	return &Status{client: client}
+func New(timeout time.Duration) *Status {
+	return &Status{client: http.Client{
+		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
+
+		Timeout: timeout,
+	}}
 }
 func (c *Status) GetStatus(ctx context.Context, url string) (bool, time.Duration) {
 	start := time.Now()

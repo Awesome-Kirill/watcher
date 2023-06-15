@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"watcher/internal/cache"
+
+	"github.com/labstack/echo/v4"
 )
 
 type Name struct {
@@ -22,7 +23,6 @@ func New(cacheStore CacheStore) *Name {
 func (n *Name) GetMax(ctx echo.Context) error {
 	max := n.cacheStore.GetMax()
 	return ctx.JSONPretty(http.StatusOK, max, "  ")
-
 }
 
 func (n *Name) GetMin(ctx echo.Context) error {
