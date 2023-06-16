@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	Timeout       time.Duration `envconfig:"timeout" default:"5s"`
-	TTL           time.Duration `envconfig:"ttl" default:"20s"`
-	ServerAddress string        `envconfig:"address" default:":1323"`
-	PatchFile     string        `envconfig:"file" default:"site.txt"`
+	ServerAddress string `envconfig:"address" default:":1323"`
+	PatchFile     string `envconfig:"file" default:"site.txt"`
+
+	Timeout time.Duration `envconfig:"timeout" default:"5s"`
+	TTL     time.Duration `envconfig:"ttl" default:"20s"`
 }
 
 func New() *Config {

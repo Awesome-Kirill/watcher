@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"time"
 	"watcher/config"
+	"watcher/internal/alive"
 	"watcher/internal/cache"
 	"watcher/internal/site"
-	"watcher/internal/status"
 	"watcher/internal/transport/handler"
 
 	"github.com/labstack/echo/v4"
@@ -21,7 +21,7 @@ func main() {
 
 	sites := site.New(conf.PatchFile)
 
-	stat := status.New(conf.Timeout)
+	stat := alive.New(conf.Timeout)
 
 	job := cache.New(stat, sites, conf.TTL)
 	go job.Watch(ctx)

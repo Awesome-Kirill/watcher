@@ -1,4 +1,4 @@
-package status
+package alive
 
 import (
 	"context"
@@ -21,7 +21,7 @@ func New(timeout time.Duration) *Status {
 		Timeout: timeout,
 	}}
 }
-func (c *Status) GetStatus(ctx context.Context, url string) (bool, time.Duration) {
+func (c *Status) Alive(ctx context.Context, url string) (bool, time.Duration) {
 	start := time.Now()
 	log.Printf("reqest start:%v", url)
 	res, err := c.client.Head("https://" + url)
