@@ -9,14 +9,14 @@ import (
 	"watcher/pkg"
 )
 
-// todo почитай как делать http
-// todo http.Client or *http.Client
 type Status struct {
-	client http.Client
+	client *http.Client
 }
 
+const durationFalseRequest = -1
+
 func New(timeout time.Duration) *Status {
-	return &Status{client: http.Client{
+	return &Status{client: &http.Client{
 		Timeout: timeout,
 	}}
 }
@@ -26,13 +26,13 @@ func (c *Status) Alive(ctx context.Context, url string) (bool, time.Duration) {
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodHead, pkg.AddShema(url), bytes.NewReader([]byte{}))
 	if err != nil {
-		return false, -1
+		return false, durationFalseRequest
 	}
 	res, err := c.client.Do(req)
 	log.Printf("reqest finish:%v", url)
 	finish := time.Since(start)
 	if err != nil {
-		return false, -1
+		return false, durationFalseRequest
 	}
 
 	defer res.Body.Close()
@@ -41,5 +41,5 @@ func (c *Status) Alive(ctx context.Context, url string) (bool, time.Duration) {
 		return true, finish
 	}
 
-	return false, -1
+	return false, durationFalseRequest
 }

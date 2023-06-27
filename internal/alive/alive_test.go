@@ -9,7 +9,7 @@ import (
 
 func TestStatus_Alive(t *testing.T) {
 	type fields struct {
-		client http.Client
+		client *http.Client
 	}
 	type args struct {
 		ctx context.Context
@@ -23,7 +23,7 @@ func TestStatus_Alive(t *testing.T) {
 		want1  time.Duration
 	}{
 		{
-			name: "error", fields: fields{client: *http.DefaultClient}, args: args{
+			name: "error", fields: fields{client: http.DefaultClient}, args: args{
 				ctx: context.Background(),
 				url: "https://error.error.1232dfsdfdsfsdf.com",
 			},

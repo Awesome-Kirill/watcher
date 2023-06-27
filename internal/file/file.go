@@ -18,7 +18,6 @@ func (s *File) Hosts(ctx context.Context) ([]string, error) {
 }
 
 func Load(path string) *File {
-	log.Println("DO IT ONE!!!")
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)

@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -35,16 +36,16 @@ type Cache struct {
 	ttl      time.Duration
 }
 
-func (c *Cache) update(ctx context.Context) {
+func (c *Cache) update(ctx context.Context) error {
 	log.Print("ticker start")
-	var wg sync.WaitGroup
 	sits, err := c.hoster.Hosts(ctx)
-
 	// todo
 	if err != nil {
 		log.Print("Hosts err")
-		return
+		return fmt.Errorf("err hoster.Hosts:%w", err)
 	}
+
+	var wg sync.WaitGroup
 	for _, url := range sits {
 		wg.Add(1)
 		go func(url string) {
@@ -61,17 +62,20 @@ func (c *Cache) update(ctx context.Context) {
 
 	wg.Wait()
 	log.Print("ticker finish")
+	return nil
 }
 
-// todo error when
-// todo start ticker
 func (c *Cache) Watch(ctx context.Context) {
 	ticker := time.NewTicker(c.ttl)
 	defer ticker.Stop()
 
 	for {
-		c.update(ctx)
-		// c.minMax()
+		err := c.update(ctx)
+		if err != nil {
+			log.Printf("err update:%v", ctx.Err())
+			continue
+		}
+
 		c.min, c.max = c.sorter.MinMax(c.data)
 		select {
 		case <-ctx.Done():
