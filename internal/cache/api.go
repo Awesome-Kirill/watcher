@@ -4,13 +4,13 @@ import (
 	"watcher/internal/dto"
 )
 
-func (c *Cache) GetUrl(url string) (dto.Info, error) {
+func (c *Cache) GetURL(url string) (dto.Info, error) {
 	val, ok := c.data[url]
 	if ok {
 		return val, nil
 	}
 
-	return dto.Info{}, SiteNotFound
+	return dto.Info{}, ErrSiteNotFound
 }
 
 func (c *Cache) GetMax() dto.InfoWithName {

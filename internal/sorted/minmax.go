@@ -10,6 +10,7 @@ func (c *Sort) MinMax(data map[string]dto.Info) (min, max dto.InfoWithName) {
 		if !info.IsAlive {
 			continue
 		}
+
 		siteInfo = append(siteInfo, dto.InfoWithName{
 			Info: dto.Info{
 				IsAlive:      info.IsAlive,

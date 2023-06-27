@@ -8,6 +8,6 @@ type Info struct {
 }
 
 type InfoWithName struct {
-	Info
 	Name string
+	Info
 }

@@ -12,7 +12,7 @@ type Name struct {
 }
 
 type CacheStore interface {
-	GetUrl(url string) (dto.Info, error)
+	GetURL(url string) (dto.Info, error)
 	GetMax() dto.InfoWithName
 	GetMin() dto.InfoWithName
 }
@@ -44,7 +44,7 @@ func (n *Name) GetSiteStat(ctx echo.Context) error {
 		}, "  ")
 	}
 
-	res, err := n.cacheStore.GetUrl(site)
+	res, err := n.cacheStore.GetURL(site)
 
 	if err != nil {
 		return ctx.JSONPretty(http.StatusBadRequest, res, "  ")

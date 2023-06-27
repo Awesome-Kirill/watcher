@@ -3,7 +3,6 @@ package alive
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
 	"log"
 	"net/http"
 	"time"
@@ -18,8 +17,6 @@ type Status struct {
 
 func New(timeout time.Duration) *Status {
 	return &Status{client: http.Client{
-		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
-
 		Timeout: timeout,
 	}}
 }

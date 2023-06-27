@@ -9,6 +9,9 @@ import (
 	"watcher/internal/dto"
 )
 
+// ErrSiteNotFound todo
+var ErrSiteNotFound = errors.New("site not found")
+
 type aliver interface {
 	Alive(context.Context, string) (isAlive bool, responseTime time.Duration)
 }
@@ -26,7 +29,7 @@ type Cache struct {
 	hoster hoster
 	sorter sorter
 
-	mu   sync.Mutex
+	mu   *sync.Mutex
 	data map[string]dto.Info
 
 	min, max dto.InfoWithName
@@ -69,7 +72,7 @@ func (c *Cache) Watch(ctx context.Context) {
 
 	for {
 		c.update(ctx)
-		//c.minMax()
+		// c.minMax()
 		c.min, c.max = c.sorter.MinMax(c.data)
 		select {
 		case <-ctx.Done():
@@ -81,15 +84,13 @@ func (c *Cache) Watch(ctx context.Context) {
 	}
 }
 
-var SiteNotFound = errors.New("SiteNotFound")
-
 func New(sorter sorter, aliver aliver, hoster hoster, ttl time.Duration) *Cache {
 	return &Cache{
 		ttl:    ttl,
 		aliver: aliver,
 		hoster: hoster,
 		sorter: sorter,
-		mu:     sync.Mutex{},
+		mu:     &sync.Mutex{},
 		data:   make(map[string]dto.Info),
 	}
 }

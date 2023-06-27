@@ -11,8 +11,9 @@ type Config struct {
 	ServerAddress string `envconfig:"address" default:":1323"`
 	PatchFile     string `envconfig:"file" default:"site.txt"`
 
-	Timeout time.Duration `envconfig:"timeout" default:"5s"`
-	TTL     time.Duration `envconfig:"ttl" default:"20s"`
+	Timeout         time.Duration `envconfig:"timeout" default:"5s"`
+	TimeoutShutdown time.Duration `envconfig:"timeoutShut" default:"15s"`
+	TTL             time.Duration `envconfig:"ttl" default:"20s"`
 }
 
 func New() *Config {

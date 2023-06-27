@@ -14,7 +14,6 @@ type MockHoster struct {
 }
 
 func (h *MockHoster) Hosts(ctx context.Context) ([]string, error) {
-
 	return []string{"https://ya.ru", "https://vc.ru", "https://wery-slow-site.com"}, nil
 }
 
@@ -22,7 +21,6 @@ type MockAliver struct {
 }
 
 func (m *MockAliver) Alive(ctx context.Context, url string) (isAlive bool, responseTime time.Duration) {
-
 	if url == "https://ya.ru" {
 		return true, 1000
 	}
@@ -46,21 +44,21 @@ func setupCache() *Cache {
 	time.Sleep(1 * time.Second)
 	cancel()
 	return cache
-
 }
 
 type fields struct {
-	ttl    time.Duration
 	aliver aliver
 	hoster hoster
-	mu     sync.Mutex
-	data   map[string]dto.Info
-	min    dto.InfoWithName
-	max    dto.InfoWithName
+
+	mu   *sync.Mutex
+	data map[string]dto.Info
+
+	min dto.InfoWithName
+	max dto.InfoWithName
+	ttl time.Duration
 }
 
 func TestCache_GetUrl(t *testing.T) {
-
 	cache := setupCache()
 
 	type args struct {
@@ -68,8 +66,8 @@ func TestCache_GetUrl(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
+		fields  fields
 		want    dto.Info
 		wantErr bool
 	}{
@@ -127,26 +125,25 @@ func TestCache_GetUrl(t *testing.T) {
 				min:    tt.fields.min,
 				max:    tt.fields.max,
 			}
-			got, err := c.GetUrl(tt.args.url)
+			got, err := c.GetURL(tt.args.url)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GetUrl() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GetURL() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetUrl() got = %v, want %v", got, tt.want)
+				t.Errorf("GetURL() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 func TestCache_GetMax(t *testing.T) {
-
 	cache := setupCache()
 
 	tests := []struct {
 		name   string
-		fields fields
 		want   dto.InfoWithName
+		fields fields
 	}{
 		{
 			name: "get max",
@@ -186,8 +183,8 @@ func TestCache_GetMin(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		fields fields
 		want   dto.InfoWithName
+		fields fields
 	}{
 		{
 			name: "get min",

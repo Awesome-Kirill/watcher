@@ -9,13 +9,15 @@ import (
 
 func TestFile_Hosts(t *testing.T) {
 	type fields struct {
-		once  sync.Once
+		once  *sync.Once
 		path  string
 		hosts []string
 	}
+
 	type args struct {
 		ctx context.Context
 	}
+
 	tests := []struct {
 		name    string
 		fields  fields
@@ -46,10 +48,11 @@ func TestFile_Hosts(t *testing.T) {
 
 func TestFile_load(t *testing.T) {
 	type fields struct {
-		once  sync.Once
+		once  *sync.Once
 		path  string
 		hosts []string
 	}
+
 	tests := []struct {
 		name   string
 		fields fields

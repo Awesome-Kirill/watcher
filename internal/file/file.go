@@ -10,7 +10,7 @@ import (
 
 // todo может как-то заюсать io.Reader / как на это писать тесты // иожет юзать one
 type File struct {
-	once  sync.Once
+	once  *sync.Once
 	path  string
 	hosts []string
 }
@@ -42,7 +42,7 @@ func (s *File) Hosts(ctx context.Context) ([]string, error) {
 
 func New(path string) *File {
 	return &File{
-		once: sync.Once{},
+		once: &sync.Once{},
 		path: path,
 	}
 }
