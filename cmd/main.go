@@ -9,7 +9,7 @@ import (
 	"watcher/config"
 	"watcher/internal/alive"
 	"watcher/internal/cache"
-	"watcher/internal/site"
+	"watcher/internal/file"
 	"watcher/internal/transport/handler"
 
 	"github.com/labstack/echo/v4"
@@ -19,7 +19,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	conf := config.New()
 
-	sites := site.New(conf.PatchFile)
+	sites := file.New(conf.PatchFile)
 
 	stat := alive.New(conf.Timeout)
 
@@ -29,7 +29,7 @@ func main() {
 
 	h := handler.New(job)
 	e.GET("/stat/min", h.GetMin)
-	e.GET("/stat/min", h.GetMax)
+	e.GET("/stat/max", h.GetMax)
 	e.GET("/stat/:id/site", h.GetSiteStat)
 
 	// Start server

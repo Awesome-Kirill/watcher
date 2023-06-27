@@ -2,7 +2,7 @@ package handler
 
 import (
 	"net/http"
-	"watcher/internal/cache"
+	"watcher/internal/dto"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,9 +12,9 @@ type Name struct {
 }
 
 type CacheStore interface {
-	GetUrl(url string) (cache.Info, error)
-	GetMax() cache.InfoWithName
-	GetMin() cache.InfoWithName
+	GetUrl(url string) (dto.Info, error)
+	GetMax() dto.InfoWithName
+	GetMin() dto.InfoWithName
 }
 
 func New(cacheStore CacheStore) *Name {
@@ -36,6 +36,13 @@ type GetSiteStatResponse struct {
 func (n *Name) GetSiteStat(ctx echo.Context) error {
 	site := ctx.Param("id")
 
+	if len(site) == 0 {
+		return ctx.JSONPretty(http.StatusBadRequest, struct {
+			message string
+		}{
+			message: "id is null",
+		}, "  ")
+	}
 	res, err := n.cacheStore.GetUrl(site)
 
 	if err != nil {

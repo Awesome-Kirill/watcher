@@ -1,6 +1,7 @@
 package alive
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"log"
@@ -24,11 +25,16 @@ func New(timeout time.Duration) *Status {
 func (c *Status) Alive(ctx context.Context, url string) (bool, time.Duration) {
 	start := time.Now()
 	log.Printf("reqest start:%v", url)
-	res, err := c.client.Head("https://" + url)
+	req, err := http.NewRequestWithContext(ctx, http.MethodHead, url, bytes.NewReader([]byte{}))
+	if err != nil {
+		return false, -1
+	}
+	res, err := c.client.Do(req)
+	//res, err := c.client.Head("https://" + url)
 	log.Printf("reqest finish:%v", url)
 	finish := time.Since(start)
 	if err != nil {
-		return false, finish
+		return false, -1
 	}
 
 	defer res.Body.Close()
@@ -37,5 +43,5 @@ func (c *Status) Alive(ctx context.Context, url string) (bool, time.Duration) {
 		return true, finish
 	}
 
-	return false, finish
+	return false, -1
 }

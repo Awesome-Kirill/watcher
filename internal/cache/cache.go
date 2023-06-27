@@ -6,44 +6,37 @@ import (
 	"log"
 	"sync"
 	"time"
+	"watcher/internal/dto"
 )
 
 type Aliver interface {
 	Alive(context.Context, string) (isAlive bool, responseTime time.Duration)
 }
 
-type Sited interface {
-	GetSites(context.Context) ([]string, error)
+// todo видео про именование интерфейса
+type Hoster interface {
+	Hosts(context.Context) ([]string, error)
 }
 
-type Info struct {
-	IsAlive      bool
-	ResponseTime time.Duration
-}
-
-type InfoWithName struct {
-	Info
-	Name string
-}
 type Cache struct {
 	ttl    time.Duration
 	aliver Aliver
-	sited  Sited
+	hoster Hoster
 
 	mu   sync.Mutex
-	data map[string]Info
+	data map[string]dto.Info
 
-	min, max InfoWithName
+	min, max dto.InfoWithName
 }
 
 func (c *Cache) update(ctx context.Context) {
 	log.Print("ticker start")
 	var wg sync.WaitGroup
-	sits, err := c.sited.GetSites(ctx)
+	sits, err := c.hoster.Hosts(ctx)
 
 	// todo
 	if err != nil {
-		log.Print("GetSites err")
+		log.Print("Hosts err")
 		return
 	}
 	for _, url := range sits {
@@ -52,7 +45,7 @@ func (c *Cache) update(ctx context.Context) {
 			defer wg.Done()
 			isAlive, finish := c.aliver.Alive(ctx, url)
 			c.mu.Lock()
-			c.data[url] = Info{
+			c.data[url] = dto.Info{
 				IsAlive:      isAlive,
 				ResponseTime: finish,
 			}
@@ -85,21 +78,21 @@ func (c *Cache) Watch(ctx context.Context) {
 
 var SiteNotFound = errors.New("SiteNotFound")
 
-func (c *Cache) GetUrl(url string) (Info, error) {
+func (c *Cache) GetUrl(url string) (dto.Info, error) {
 	val, ok := c.data[url]
 	if ok {
 		return val, nil
 	}
 
-	return Info{}, SiteNotFound
+	return dto.Info{}, SiteNotFound
 }
 
-func New(stater Aliver, sited Sited, ttl time.Duration) *Cache {
+func New(stater Aliver, sited Hoster, ttl time.Duration) *Cache {
 	return &Cache{
 		ttl:    ttl,
 		aliver: stater,
-		sited:  sited,
+		hoster: sited,
 		mu:     sync.Mutex{},
-		data:   make(map[string]Info),
+		data:   make(map[string]dto.Info),
 	}
 }
