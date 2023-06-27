@@ -16,7 +16,6 @@ type aliver interface {
 	Alive(context.Context, string) (isAlive bool, responseTime time.Duration)
 }
 
-// todo видео про именование интерфейса
 type hoster interface {
 	Hosts(context.Context) ([]string, error)
 }

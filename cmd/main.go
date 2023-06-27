@@ -8,7 +8,7 @@ import (
 	"time"
 	"watcher/config"
 	"watcher/internal/alive"
-	"watcher/internal/cache"
+	cacheStatus "watcher/internal/cache"
 	"watcher/internal/file"
 	"watcher/internal/sorted"
 	"watcher/internal/transport/handler"
@@ -17,18 +17,18 @@ import (
 )
 
 func main() {
+
 	ctx, cancel := context.WithCancel(context.Background())
 	conf := config.New()
 
-	sites := file.New(conf.PatchFile)
-
+	sites := file.Load(conf.PatchFile)
 	stat := alive.New(conf.Timeout)
+	cache := cacheStatus.New(new(sorted.Sort), stat, sites, conf.TTL)
 
-	job := cache.New(new(sorted.Sort), stat, sites, conf.TTL)
-	go job.Watch(ctx)
+	go cache.Watch(ctx)
+
 	e := echo.New()
-
-	h := handler.New(job)
+	h := handler.New(cache)
 	e.GET("/stat/min", h.GetMin)
 	e.GET("/stat/max", h.GetMax)
 	e.GET("/stat/:id/site", h.GetSiteStat)

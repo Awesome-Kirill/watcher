@@ -3,6 +3,7 @@ module watcher
 go 1.18
 
 require (
+	github.com/golang/mock v1.6.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo/v4 v4.10.2
 )
