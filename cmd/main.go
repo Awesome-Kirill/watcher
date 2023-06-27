@@ -10,6 +10,7 @@ import (
 	"watcher/internal/alive"
 	"watcher/internal/cache"
 	"watcher/internal/file"
+	"watcher/internal/sorted"
 	"watcher/internal/transport/handler"
 
 	"github.com/labstack/echo/v4"
@@ -23,7 +24,7 @@ func main() {
 
 	stat := alive.New(conf.Timeout)
 
-	job := cache.New(stat, sites, conf.TTL)
+	job := cache.New(new(sorted.Sort), stat, sites, conf.TTL)
 	go job.Watch(ctx)
 	e := echo.New()
 

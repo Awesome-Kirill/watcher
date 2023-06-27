@@ -9,24 +9,28 @@ import (
 	"watcher/internal/dto"
 )
 
-type Aliver interface {
+type aliver interface {
 	Alive(context.Context, string) (isAlive bool, responseTime time.Duration)
 }
 
 // todo видео про именование интерфейса
-type Hoster interface {
+type hoster interface {
 	Hosts(context.Context) ([]string, error)
 }
 
+type sorter interface {
+	MinMax(map[string]dto.Info) (min, max dto.InfoWithName)
+}
 type Cache struct {
-	ttl    time.Duration
-	aliver Aliver
-	hoster Hoster
+	aliver aliver
+	hoster hoster
+	sorter sorter
 
 	mu   sync.Mutex
 	data map[string]dto.Info
 
 	min, max dto.InfoWithName
+	ttl      time.Duration
 }
 
 func (c *Cache) update(ctx context.Context) {
@@ -65,7 +69,8 @@ func (c *Cache) Watch(ctx context.Context) {
 
 	for {
 		c.update(ctx)
-		c.minMax()
+		//c.minMax()
+		c.min, c.max = c.sorter.MinMax(c.data)
 		select {
 		case <-ctx.Done():
 			log.Println(ctx.Err())
@@ -78,20 +83,12 @@ func (c *Cache) Watch(ctx context.Context) {
 
 var SiteNotFound = errors.New("SiteNotFound")
 
-func (c *Cache) GetUrl(url string) (dto.Info, error) {
-	val, ok := c.data[url]
-	if ok {
-		return val, nil
-	}
-
-	return dto.Info{}, SiteNotFound
-}
-
-func New(stater Aliver, sited Hoster, ttl time.Duration) *Cache {
+func New(sorter sorter, aliver aliver, hoster hoster, ttl time.Duration) *Cache {
 	return &Cache{
 		ttl:    ttl,
-		aliver: stater,
-		hoster: sited,
+		aliver: aliver,
+		hoster: hoster,
+		sorter: sorter,
 		mu:     sync.Mutex{},
 		data:   make(map[string]dto.Info),
 	}

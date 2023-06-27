@@ -41,10 +41,8 @@ func (s *File) Hosts(ctx context.Context) ([]string, error) {
 }
 
 func New(path string) *File {
-
 	return &File{
 		once: sync.Once{},
 		path: path,
 	}
-
 }

@@ -36,13 +36,14 @@ type GetSiteStatResponse struct {
 func (n *Name) GetSiteStat(ctx echo.Context) error {
 	site := ctx.Param("id")
 
-	if len(site) == 0 {
+	if site == "" {
 		return ctx.JSONPretty(http.StatusBadRequest, struct {
 			message string
 		}{
 			message: "id is null",
 		}, "  ")
 	}
+
 	res, err := n.cacheStore.GetUrl(site)
 
 	if err != nil {

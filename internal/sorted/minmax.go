@@ -1,13 +1,12 @@
-package cache
+package sorted
 
-import (
-	"log"
-	"watcher/internal/dto"
-)
+import "watcher/internal/dto"
 
-func (c *Cache) minMax() {
-	siteInfo := make([]dto.InfoWithName, 0, len(c.data))
-	for name, info := range c.data {
+type Sort func()
+
+func (c *Sort) MinMax(data map[string]dto.Info) (min, max dto.InfoWithName) {
+	siteInfo := make([]dto.InfoWithName, 0, len(data))
+	for name, info := range data {
 		if !info.IsAlive {
 			continue
 		}
@@ -23,8 +22,8 @@ func (c *Cache) minMax() {
 	if len(siteInfo) == 0 {
 		return
 	}
-	var max = siteInfo[0]
-	var min = siteInfo[0]
+	max = siteInfo[0]
+	min = siteInfo[0]
 	for _, value := range siteInfo {
 		if max.ResponseTime < value.ResponseTime {
 			max = value
@@ -33,15 +32,6 @@ func (c *Cache) minMax() {
 			min = value
 		}
 	}
-	c.min = min
-	c.max = max
-	log.Print("sort finish")
-}
 
-func (c *Cache) GetMax() dto.InfoWithName {
-	return c.max
-}
-
-func (c *Cache) GetMin() dto.InfoWithName {
-	return c.min
+	return min, max
 }

@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 	"watcher/internal/dto"
+	"watcher/internal/sorted"
 )
 
 type MockHoster struct {
@@ -36,7 +37,7 @@ func (m *MockAliver) Alive(ctx context.Context, url string) (isAlive bool, respo
 func setupCache() *Cache {
 	hoster := &MockHoster{}
 	aliver := &MockAliver{}
-	cache := New(aliver, hoster, 1)
+	cache := New(new(sorted.Sort), aliver, hoster, 1)
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
 		cache.Watch(ctx)
@@ -50,8 +51,8 @@ func setupCache() *Cache {
 
 type fields struct {
 	ttl    time.Duration
-	aliver Aliver
-	hoster Hoster
+	aliver aliver
+	hoster hoster
 	mu     sync.Mutex
 	data   map[string]dto.Info
 	min    dto.InfoWithName
