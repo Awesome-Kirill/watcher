@@ -17,8 +17,8 @@ func TestMakeUrl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MakeUrl(tt.args.rawURL); got != tt.want {
-				t.Errorf("MakeUrl() = %v, want %v", got, tt.want)
+			if got := AddShema(tt.args.rawURL); got != tt.want {
+				t.Errorf("AddShema() = %v, want %v", got, tt.want)
 			}
 		})
 	}

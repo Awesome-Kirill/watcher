@@ -20,6 +20,9 @@ func (c *Cache) minMax() {
 		})
 	}
 
+	if len(siteInfo) == 0 {
+		return
+	}
 	var max = siteInfo[0]
 	var min = siteInfo[0]
 	for _, value := range siteInfo {

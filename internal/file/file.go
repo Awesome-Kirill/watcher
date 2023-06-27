@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"sync"
-	"watcher/pkg"
 )
 
 // todo может как-то заюсать io.Reader / как на это писать тесты // иожет юзать one
@@ -28,7 +27,7 @@ func (s *File) load() {
 
 			scanner := bufio.NewScanner(file)
 			for scanner.Scan() {
-				s.hosts = append(s.hosts, pkg.MakeUrl(scanner.Text()))
+				s.hosts = append(s.hosts, scanner.Text())
 			}
 
 			if err := scanner.Err(); err != nil {

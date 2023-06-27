@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"watcher/pkg"
 )
 
 // todo почитай как делать http
@@ -25,12 +26,12 @@ func New(timeout time.Duration) *Status {
 func (c *Status) Alive(ctx context.Context, url string) (bool, time.Duration) {
 	start := time.Now()
 	log.Printf("reqest start:%v", url)
-	req, err := http.NewRequestWithContext(ctx, http.MethodHead, url, bytes.NewReader([]byte{}))
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodHead, pkg.AddShema(url), bytes.NewReader([]byte{}))
 	if err != nil {
 		return false, -1
 	}
 	res, err := c.client.Do(req)
-	//res, err := c.client.Head("https://" + url)
 	log.Printf("reqest finish:%v", url)
 	finish := time.Since(start)
 	if err != nil {
@@ -39,7 +40,7 @@ func (c *Status) Alive(ctx context.Context, url string) (bool, time.Duration) {
 
 	defer res.Body.Close()
 
-	if res.StatusCode < 300 {
+	if res.StatusCode == http.StatusOK {
 		return true, finish
 	}
 

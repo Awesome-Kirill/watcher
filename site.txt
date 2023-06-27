@@ -1,8 +1,8 @@
-http://google.com
-http://youtube.com
-http://facebook.com
-http://baidu.com
-http://wikipedia.org
+google.com
+youtube.com
+facebook.com
+baidu.com
+wikipedia.org
 qq.com
 taobao.com
 yahoo.com
