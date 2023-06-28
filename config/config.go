@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	ServerAddress string `envconfig:"address" default:":1323"`
+	ServerAddress string `envconfig:"address" default:":8080"`
 	PatchFile     string `envconfig:"file" default:"site.txt"`
 	AdminKey      string `envconfig:"adminKey" default:"any-secret"`
 
