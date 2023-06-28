@@ -75,9 +75,9 @@ func (m *Mockhoster) EXPECT() *MockhosterMockRecorder {
 }
 
 // Hosts mocks base method.
-func (m *Mockhoster) Hosts(arg0 context.Context) ([]string, error) {
+func (m *Mockhoster) Host(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Hosts", arg0)
+	ret := m.ctrl.Call(m, "Host", arg0)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
@@ -86,7 +86,7 @@ func (m *Mockhoster) Hosts(arg0 context.Context) ([]string, error) {
 // Hosts indicates an expected call of Hosts.
 func (mr *MockhosterMockRecorder) Hosts(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hosts", reflect.TypeOf((*Mockhoster)(nil).Hosts), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Host", reflect.TypeOf((*Mockhoster)(nil).Host), arg0)
 }
 
 // Mocksorter is a mock of sorter interface.

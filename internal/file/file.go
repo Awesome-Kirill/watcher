@@ -13,7 +13,7 @@ type File struct {
 	hosts []string
 }
 
-func (s *File) Hosts(ctx context.Context) ([]string, error) {
+func (s *File) Host(ctx context.Context) ([]string, error) {
 	return s.hosts, nil
 }
 

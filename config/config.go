@@ -10,6 +10,7 @@ import (
 type Config struct {
 	ServerAddress string `envconfig:"address" default:":1323"`
 	PatchFile     string `envconfig:"file" default:"site.txt"`
+	AdminKey      string `envconfig:"adminKey" default:"any-secret"`
 
 	Timeout         time.Duration `envconfig:"timeout" default:"5s"`
 	TimeoutShutdown time.Duration `envconfig:"timeoutShut" default:"15s"`

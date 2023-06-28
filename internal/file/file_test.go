@@ -29,13 +29,13 @@ func TestFile_Hosts(t *testing.T) {
 				path:  tt.fields.path,
 				hosts: tt.fields.hosts,
 			}
-			got, err := s.Hosts(tt.args.ctx)
+			got, err := s.Host(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Hosts() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Host() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Hosts() got = %v, want %v", got, tt.want)
+				t.Errorf("Host() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

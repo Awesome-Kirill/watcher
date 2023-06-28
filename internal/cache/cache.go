@@ -18,7 +18,7 @@ type aliver interface {
 }
 
 type hoster interface {
-	Hosts(context.Context) ([]string, error)
+	Host(context.Context) ([]string, error)
 }
 
 type sorter interface {
@@ -38,11 +38,11 @@ type Cache struct {
 
 func (c *Cache) update(ctx context.Context) error {
 	log.Print("ticker start")
-	sits, err := c.hoster.Hosts(ctx)
+	sits, err := c.hoster.Host(ctx)
 	// todo
 	if err != nil {
-		log.Print("Hosts err")
-		return fmt.Errorf("err hoster.Hosts:%w", err)
+		log.Print("Host err")
+		return fmt.Errorf("err hoster.Host:%w", err)
 	}
 
 	var wg sync.WaitGroup

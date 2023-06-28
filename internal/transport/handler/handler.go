@@ -3,14 +3,14 @@ package handler
 import (
 	"net/http"
 	"watcher/internal/dto"
-	"watcher/internal/middleware"
+	"watcher/internal/stat"
 
 	"github.com/labstack/echo/v4"
 )
 
 type Server struct {
 	cacheStore CacheStore
-	stat       middleware.Stat
+	stat       stat.Stat
 }
 
 type CacheStore interface {
@@ -22,7 +22,7 @@ type CacheStore interface {
 func New(cacheStore CacheStore) *Server {
 	return &Server{
 		cacheStore: cacheStore,
-		stat:       middleware.Stat{},
+		stat:       stat.Stat{},
 	}
 }
 func (n *Server) GetMax(ctx echo.Context) error {
@@ -40,6 +40,11 @@ func (n *Server) GetMin(ctx echo.Context) error {
 }
 
 type GetSiteStatResponse struct {
+}
+
+func (n *Server) GetStat(ctx echo.Context) error {
+	res := n.stat.Stat()
+	return ctx.JSONPretty(http.StatusOK, res, "  ")
 }
 
 func (n *Server) GetSiteStat(ctx echo.Context) error {

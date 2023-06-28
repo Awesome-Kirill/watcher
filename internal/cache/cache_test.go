@@ -13,7 +13,7 @@ import (
 type MockHoster struct {
 }
 
-func (h *MockHoster) Hosts(ctx context.Context) ([]string, error) {
+func (h *MockHoster) Host(ctx context.Context) ([]string, error) {
 	return []string{"https://ya.ru", "https://vc.ru", "https://wery-slow-site.com"}, nil
 }
 
