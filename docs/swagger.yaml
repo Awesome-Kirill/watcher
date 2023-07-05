@@ -1,0 +1,78 @@
+definitions:
+  handler.GetMaxResponse:
+    properties:
+      name:
+        type: string
+      seconds:
+        type: number
+    type: object
+  handler.GetMinResponse:
+    properties:
+      name:
+        type: string
+      seconds:
+        type: number
+    type: object
+  handler.GetSiteStatResponse:
+    properties:
+      IsAlive:
+        type: boolean
+      name:
+        type: string
+      seconds:
+        type: number
+    type: object
+info:
+  contact: {}
+paths:
+  /admin/stat:
+    get:
+      description: Return most fasts site
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetMinResponse'
+      summary: Return statistic
+  /stat/{id}/site:
+    get:
+      description: Return most fasts site
+      parameters:
+      - description: Site ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetSiteStatResponse'
+      summary: Return most fasts site
+  /stat/max:
+    get:
+      description: Return most slow site
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetMaxResponse'
+      summary: Return most slow site
+  /stat/min:
+    get:
+      description: Return most fasts site
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetMinResponse'
+      summary: Return most fasts site
+swagger: "2.0"

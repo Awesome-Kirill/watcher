@@ -19,7 +19,7 @@ type Config struct {
 
 func New() *Config {
 	var config Config
-	err := envconfig.Process("todo", &config)
+	err := envconfig.Process("app", &config)
 	if err != nil {
 		log.Fatalln(err)
 	}

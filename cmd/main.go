@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,9 +14,6 @@ import (
 	"watcher/internal/file"
 	"watcher/internal/sorted"
 	"watcher/internal/transport/handler"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -27,8 +26,8 @@ func main() {
 
 	go cache.Watch(ctx)
 
-	e := echo.New()
 	h := handler.New(cache)
+	e := echo.New()
 
 	e.GET("/stat/min", h.GetMin)
 	e.GET("/stat/max", h.GetMax)
@@ -37,6 +36,7 @@ func main() {
 	e.GET("/admin/stat", h.GetStat, middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
 		return key == conf.AdminKey, nil
 	}))
+
 	// Start server
 	go func() {
 		if err := e.Start(conf.ServerAddress); err != nil && err != http.ErrServerClosed {
