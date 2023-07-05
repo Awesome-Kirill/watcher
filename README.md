@@ -14,6 +14,18 @@ Both we have administrators, who want to get statistics for this endpoints
 
 
 ## HOWTO
+- :running_man: build: docker build . --tag=watcher:1.0
+- :running_man: run: docker run -it -p 8080:8080 --rm --name app-watcher watche:1.0
+```
+- curl --location --request GET 'http://localhost:8080/stat/reddit.com/site'
+```
+
+```
+- curl --location --request GET 'http://localhost:8080/admin/stat' \
+  --header 'Authorization: Bearer any-secret'
+```
 
 - :test_tube: run tests with `make test`
 - :sunflower: run linter with `make lint`
+- :heart: generate documentation with `make swagger`
+- see docs in ./docs
