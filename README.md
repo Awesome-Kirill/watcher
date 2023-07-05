@@ -1,12 +1,19 @@
-# Test Task - SitesResponseAPI
-Задача:
-Написать программу, которая будет проверять список сайтов на доступность.
+## Task
+<img align="right" width="50%" src="./images/big-gopher.jpg">
+Write a program, that will check the list of domains for accessibility
 
-Раз в минуту нужно проверять доступны ли сайты из списка и засекать время доступа к ним.
-Есть большое кол-во пользователей, которые хотят знать время доступа к сайтам.
-У пользователей есть 3 варианта запросов (эндпойнта):
-1. Получить время доступа к определенному сайту.
-2. Получить имя сайта с минимальным временем доступа.
-3. Получить имя сайта с максимальным временем доступа.
+Once a minute we need to check, if domains are available and get their ping.
+We have many users, who want to know domains ping.
+Users have three options:
 
-И есть администраторы, которые хотят получать статистику количества запросов пользователей по трем вышеперечисленным эндпойнтам.
+1. Get the time for specific domain
+2. Get the domain with min ping
+3. Get the domain with max ping
+
+Both we have administrators, who want to get statistics for this endpoints
+
+
+## HOWTO
+
+- :test_tube: run tests with `make test`
+- :sunflower: run linter with `make lint`
