@@ -29,9 +29,10 @@ type Cache struct {
 	hoster hoster
 	sorter sorter
 
-	mu   *sync.Mutex
+	mu   *sync.RWMutex
 	data map[string]dto.Info
 
+	sortMux  *sync.RWMutex
 	min, max dto.InfoWithName
 	ttl      time.Duration
 }
@@ -76,7 +77,9 @@ func (c *Cache) Watch(ctx context.Context) {
 			continue
 		}
 
+		c.sortMux.Lock()
 		c.min, c.max = c.sorter.MinMax(c.data)
+		c.sortMux.Unlock()
 		select {
 		case <-ctx.Done():
 			log.Println(ctx.Err())
@@ -89,11 +92,14 @@ func (c *Cache) Watch(ctx context.Context) {
 
 func New(sorter sorter, aliver aliver, hoster hoster, ttl time.Duration) *Cache {
 	return &Cache{
-		ttl:    ttl,
-		aliver: aliver,
-		hoster: hoster,
-		sorter: sorter,
-		mu:     &sync.Mutex{},
-		data:   make(map[string]dto.Info),
+		aliver:  aliver,
+		hoster:  hoster,
+		sorter:  sorter,
+		mu:      &sync.RWMutex{},
+		data:    make(map[string]dto.Info),
+		sortMux: &sync.RWMutex{},
+		min:     dto.InfoWithName{},
+		max:     dto.InfoWithName{},
+		ttl:     ttl,
 	}
 }

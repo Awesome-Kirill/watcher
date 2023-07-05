@@ -4,20 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/golang/mock/gomock"
-	"io/ioutil"
-	"log"
-	"os"
 	"testing"
 	"time"
 	mock_cache "watcher/internal/cache/mock"
 	"watcher/internal/dto"
 	"watcher/internal/sorted"
 )
-
-func TestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
-	os.Exit(m.Run())
-}
 
 func TestMockCache_GetUrl(t *testing.T) {
 	ctrl := gomock.NewController(t)
