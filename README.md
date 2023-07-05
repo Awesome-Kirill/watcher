@@ -28,10 +28,17 @@ curl --location --request GET 'http://localhost:8080/stat/reddit.com/site'
 ```
 
 ```
+curl --location --request GET 'http://localhost:8080/stat/min'
+```
+
+```
+curl --location --request GET 'http://localhost:8080/stat/max'
+```
+
+```
 curl --location --request GET 'http://localhost:8080/admin/stat' \
   --header 'Authorization: Bearer any-secret'
 ```
-
 - :test_tube: run tests with `make test`
 - :sunflower: run linter with `make lint`
 - :heart: generate documentation with `make swagger`

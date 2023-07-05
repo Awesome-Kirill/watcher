@@ -13,6 +13,8 @@ import (
 	"watcher/internal/sorted"
 	"watcher/internal/transport/handler"
 
+	"github.com/rs/zerolog"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -21,9 +23,15 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	conf := config.New()
 
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if conf.DebugMod {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
+	log := zerolog.New(os.Stdout).With().Timestamp().Logger()
+
 	sites := file.Load(conf.PatchFile)
-	stat := alive.New(conf.Timeout)
-	cache := cacheStatus.New(new(sorted.Sort), stat, sites, conf.TTL)
+	stat := alive.New(conf.Timeout, &log)
+	cache := cacheStatus.New(new(sorted.Sort), stat, sites, &log, conf.TTL)
 
 	go cache.Watch(ctx)
 
@@ -41,16 +49,18 @@ func main() {
 	// Start server
 	go func() {
 		if err := e.Start(conf.ServerAddress); err != nil && err != http.ErrServerClosed {
-			e.Logger.Fatal("shutting down the server")
+			log.Fatal().Err(err).Msg("shutting down the server")
 		}
 	}()
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	cancel()
-	ctxShutdown, cancelShutdown := context.WithTimeout(context.Background(), conf.TimeoutShutdown*time.Second)
+
+	ctxShutdown, cancelShutdown := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelShutdown()
 	if err := e.Shutdown(ctxShutdown); err != nil {
-		e.Logger.Fatal(err)
+		log.Fatal().Err(err).Msg("server stop error")
 	}
+	log.Info().Msg("stopped!")
 }

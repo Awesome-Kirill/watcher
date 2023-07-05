@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/rs/zerolog"
 	"log"
 	"sync"
 	"time"
@@ -35,10 +36,12 @@ type Cache struct {
 	sortMux  *sync.RWMutex
 	min, max dto.InfoWithName
 	ttl      time.Duration
+
+	logger *zerolog.Logger
 }
 
 func (c *Cache) update(ctx context.Context) error {
-	log.Print("ticker start")
+	c.logger.Info().Msg("update start")
 	sits, err := c.hoster.Host(ctx)
 	// todo
 	if err != nil {
@@ -62,7 +65,7 @@ func (c *Cache) update(ctx context.Context) error {
 	}
 
 	wg.Wait()
-	log.Print("ticker finish")
+	c.logger.Info().Msg("update finish")
 	return nil
 }
 
@@ -73,7 +76,7 @@ func (c *Cache) Watch(ctx context.Context) {
 	for {
 		err := c.update(ctx)
 		if err != nil {
-			log.Printf("err update:%v", ctx.Err())
+			c.logger.Err(ctx.Err()).Msg("err update")
 			continue
 		}
 
@@ -82,7 +85,7 @@ func (c *Cache) Watch(ctx context.Context) {
 		c.sortMux.Unlock()
 		select {
 		case <-ctx.Done():
-			log.Println(ctx.Err())
+			c.logger.Err(ctx.Err()).Msg("watcher context done")
 			return
 		case <-ticker.C:
 			continue
@@ -90,7 +93,7 @@ func (c *Cache) Watch(ctx context.Context) {
 	}
 }
 
-func New(sorter sorter, aliver aliver, hoster hoster, ttl time.Duration) *Cache {
+func New(sorter sorter, aliver aliver, hoster hoster, logger *zerolog.Logger, ttl time.Duration) *Cache {
 	return &Cache{
 		aliver:  aliver,
 		hoster:  hoster,
@@ -101,5 +104,6 @@ func New(sorter sorter, aliver aliver, hoster hoster, ttl time.Duration) *Cache 
 		min:     dto.InfoWithName{},
 		max:     dto.InfoWithName{},
 		ttl:     ttl,
+		logger:  logger,
 	}
 }
