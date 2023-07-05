@@ -47,8 +47,8 @@ func TestLoad(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		args args
 		want *File
+		args args
 	}{
 		// TODO: Add test cases.
 	}

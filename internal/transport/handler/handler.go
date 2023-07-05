@@ -48,7 +48,7 @@ func (n *Server) GetStat(ctx echo.Context) error {
 }
 
 func (n *Server) GetSiteStat(ctx echo.Context) error {
-	defer n.stat.IncUrl()
+	defer n.stat.IncURL()
 
 	site := ctx.Param("id")
 

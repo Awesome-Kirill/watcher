@@ -3,12 +3,13 @@ package cache
 import (
 	"context"
 	"errors"
-	"github.com/golang/mock/gomock"
 	"testing"
 	"time"
 	mock_cache "watcher/internal/cache/mock"
 	"watcher/internal/dto"
 	"watcher/internal/sorted"
+
+	"github.com/golang/mock/gomock"
 )
 
 func TestMockCache_GetUrl(t *testing.T) {
@@ -75,6 +76,4 @@ func TestMockCache_GetUrl(t *testing.T) {
 	if !errors.Is(notExistErr, ErrSiteNotFound) {
 		t.Errorf("err = %v, want %v", notExistErr, ErrSiteNotFound)
 	}
-
-	//cache.GetURL()
 }

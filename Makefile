@@ -1,5 +1,5 @@
 lint:
 	golangci-lint run
 
-tests:
-	go test -v ./...
+test:
+	go test  ./... -v --race
