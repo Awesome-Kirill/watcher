@@ -2,6 +2,8 @@ package alive
 
 import (
 	"context"
+	"github.com/rs/zerolog"
+	"io"
 	"net/http"
 	"testing"
 	"time"
@@ -10,11 +12,14 @@ import (
 func TestStatus_Alive(t *testing.T) {
 	type fields struct {
 		client *http.Client
+		logger *zerolog.Logger
 	}
 	type args struct {
 		ctx context.Context
 		url string
 	}
+	var s io.Writer
+	l := zerolog.New(s)
 	tests := []struct {
 		name   string
 		fields fields
@@ -23,7 +28,10 @@ func TestStatus_Alive(t *testing.T) {
 		want1  time.Duration
 	}{
 		{
-			name: "error", fields: fields{client: http.DefaultClient}, args: args{
+			name: "error", fields: fields{
+				client: http.DefaultClient,
+				logger: &l,
+			}, args: args{
 				ctx: context.Background(),
 				url: "https://error.error.1232dfsdfdsfsdf.com",
 			},
@@ -35,6 +43,7 @@ func TestStatus_Alive(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Status{
+				logger: tt.fields.logger,
 				client: tt.fields.client,
 			}
 			got, got1 := c.Alive(tt.args.ctx, tt.args.url)

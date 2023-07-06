@@ -3,6 +3,8 @@ package cache
 import (
 	"context"
 	"errors"
+	"github.com/rs/zerolog"
+	"io"
 	"testing"
 	"time"
 	mock_cache "watcher/internal/cache/mock"
@@ -26,8 +28,9 @@ func TestMockCache_GetUrl(t *testing.T) {
 	aliver.EXPECT().Alive(ctx, "slow.ru").Return(false, time.Duration(-1)).AnyTimes()
 
 	hoster.EXPECT().Hosts(ctx).Return([]string{"ya.ru", "habr.ru", "xxx.ru", "slow.ru"}, nil).AnyTimes()
-
-	cache := New(new(sorted.Sort), aliver, hoster, 1)
+	var s io.Writer
+	l := zerolog.New(s)
+	cache := New(new(sorted.Sort), aliver, hoster, &l, 1)
 
 	go func() {
 		cache.Watch(ctx)

@@ -33,7 +33,9 @@ func main() {
 	stat := alive.New(conf.Timeout, &log)
 	cache := cacheStatus.New(new(sorted.Sort), stat, sites, &log, conf.TTL)
 
-	go cache.Watch(ctx)
+	go func() {
+		cache.Watch(ctx)
+	}()
 
 	h := handler.New(cache)
 	e := echo.New()
