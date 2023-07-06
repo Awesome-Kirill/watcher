@@ -18,9 +18,17 @@ const docTemplate = `{
     "paths": {
         "/admin/stat": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Return most fasts site",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Administration"
                 ],
                 "summary": "Return statistic",
                 "responses": {
@@ -131,17 +139,24 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "watcher",
+	Description:      "Сервис для проверки доступности сайтов",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -24,6 +24,9 @@ definitions:
     type: object
 info:
   contact: {}
+  description: Сервис для проверки доступности сайтов
+  title: watcher
+  version: "1.0"
 paths:
   /admin/stat:
     get:
@@ -35,7 +38,11 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.GetMinResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Return statistic
+      tags:
+      - Administration
   /stat/{id}/site:
     get:
       description: Return most fasts site
@@ -75,4 +82,9 @@ paths:
           schema:
             $ref: '#/definitions/handler.GetMinResponse'
       summary: Return most fasts site
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

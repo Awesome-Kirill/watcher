@@ -80,7 +80,9 @@ type GetStatResponse struct {
 
 // GetStat godoc
 // @Summary     Return statistic
+// @Tags        Administration
 // @Description Return most fasts site
+// @Security ApiKeyAuth
 // @Produce     json
 // @Success     200       {object} GetMinResponse
 // @Router      /admin/stat [get]

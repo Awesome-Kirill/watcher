@@ -1,14 +1,25 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Сервис для проверки доступности сайтов",
+        "title": "watcher",
+        "contact": {},
+        "version": "1.0"
     },
     "paths": {
         "/admin/stat": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Return most fasts site",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Administration"
                 ],
                 "summary": "Return statistic",
                 "responses": {
@@ -118,6 +129,13 @@
                     "type": "number"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }
