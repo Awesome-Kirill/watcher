@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,8 +18,22 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	_ "watcher/docs"
 )
 
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	conf := config.New()
@@ -47,7 +62,7 @@ func main() {
 	e.GET("/admin/stat", h.GetStat, middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
 		return key == conf.AdminKey, nil
 	}))
-
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Start server
 	go func() {
 		if err := e.Start(conf.ServerAddress); err != nil && err != http.ErrServerClosed {

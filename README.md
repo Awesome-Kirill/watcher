@@ -42,4 +42,4 @@ curl --location --request GET 'http://localhost:8080/admin/stat' \
 - :test_tube: run tests with `make test`
 - :sunflower: run linter with `make lint`
 - :heart: generate documentation with `make swagger`
-- see docs in ./docs
+- see docs in http://localhost:8080/swagger/
