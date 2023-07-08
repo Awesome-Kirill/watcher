@@ -20,7 +20,7 @@ docker build . --tag=watcher:1.0
 ```
 - :running_man: run
 ```
-docker run -it -p 8080:8080 --rm --name app-watcher watche:1.0
+docker run -it -p 8080:8080 --rm --name app-watcher watcher:1.0
 ```
 
 ```
