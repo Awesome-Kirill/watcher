@@ -21,7 +21,7 @@ func New() *Config {
 	var config Config
 	err := envconfig.Process("app", &config)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	return &config

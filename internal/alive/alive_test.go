@@ -2,11 +2,12 @@ package alive
 
 import (
 	"context"
-	"github.com/rs/zerolog"
 	"io"
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog"
 )
 
 func TestStatus_Alive(t *testing.T) {

@@ -9,4 +9,3 @@ COPY . .
 RUN go build -v -ldflags="-s -w" -o /usr/local/bin/app /usr/src/app/cmd/main.go
 
 CMD ["app"]
-

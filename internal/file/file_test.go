@@ -2,8 +2,11 @@ package file
 
 import (
 	"context"
+	"io"
 	"reflect"
 	"testing"
+
+	"github.com/rs/zerolog"
 )
 
 func TestFile_Hosts(t *testing.T) {
@@ -45,6 +48,8 @@ func TestLoad(t *testing.T) {
 	type args struct {
 		path string
 	}
+	var s io.Writer
+	l := zerolog.New(s)
 	tests := []struct {
 		name string
 		want *File
@@ -54,7 +59,7 @@ func TestLoad(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Load(tt.args.path); !reflect.DeepEqual(got, tt.want) {
+			if got := Load(tt.args.path, &l); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Load() = %v, want %v", got, tt.want)
 			}
 		})

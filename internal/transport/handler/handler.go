@@ -2,10 +2,14 @@ package handler
 
 import (
 	"net/http"
+
+	_ "watcher/docs"
 	"watcher/internal/dto"
 	"watcher/internal/stat"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type Server struct {
@@ -19,11 +23,23 @@ type CacheStore interface {
 	GetMin() dto.InfoWithName
 }
 
-func New(cacheStore CacheStore) *Server {
-	return &Server{
+func New(cacheStore CacheStore, adminKey string) *echo.Echo {
+	server := &Server{
 		cacheStore: cacheStore,
 		stat:       stat.Stat{},
 	}
+	e := echo.New()
+
+	e.GET("/stat/min", server.GetMin)
+	e.GET("/stat/max", server.GetMax)
+	e.GET("/stat/:id/site", server.GetSiteStat)
+
+	e.GET("/admin/stat", server.GetStat, middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
+		return key == adminKey, nil
+	}))
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
+	return e
 }
 
 type GetMaxResponse struct {

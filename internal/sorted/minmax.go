@@ -21,7 +21,7 @@ func (c *Sort) MinMax(data map[string]dto.Info) (min, max dto.InfoWithName) {
 	}
 
 	if len(siteInfo) == 0 {
-		return
+		return min, max
 	}
 	max = siteInfo[0]
 	min = siteInfo[0]

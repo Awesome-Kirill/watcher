@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/rs/zerolog"
-	"log"
 	"sync"
 	"time"
 	"watcher/internal/dto"
+
+	"github.com/rs/zerolog"
 )
 
 // ErrSiteNotFound todo
@@ -45,7 +45,7 @@ func (c *Cache) update(ctx context.Context) error {
 	sits, err := c.hoster.Host(ctx)
 	// todo
 	if err != nil {
-		log.Print("Host err")
+		c.logger.Err(err).Msg("err get host")
 		return fmt.Errorf("err hoster.Host:%w", err)
 	}
 

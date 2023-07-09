@@ -3,13 +3,14 @@ package cache
 import (
 	"context"
 	"errors"
-	"github.com/rs/zerolog"
 	"io"
 	"testing"
 	"time"
 	mock_cache "watcher/internal/cache/mock"
 	"watcher/internal/dto"
 	"watcher/internal/sorted"
+
+	"github.com/rs/zerolog"
 
 	"github.com/golang/mock/gomock"
 )

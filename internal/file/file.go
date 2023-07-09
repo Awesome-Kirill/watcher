@@ -3,24 +3,24 @@ package file
 import (
 	"bufio"
 	"context"
-	"log"
 	"os"
+
+	"github.com/rs/zerolog"
 )
 
-// todo может как-то заюсать io.Reader / как на это писать тесты // иожет юзать one
 type File struct {
 	path  string
 	hosts []string
 }
 
-func (s *File) Host(ctx context.Context) ([]string, error) {
+func (s *File) Host(_ context.Context) ([]string, error) {
 	return s.hosts, nil
 }
 
-func Load(path string) *File {
+func Load(path string, logger *zerolog.Logger) *File {
 	file, err := os.Open(path)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal().Err(err)
 	}
 	defer file.Close()
 
@@ -32,7 +32,7 @@ func Load(path string) *File {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		logger.Fatal().Err(err)
 	}
 
 	return &File{
