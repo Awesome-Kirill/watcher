@@ -14,13 +14,10 @@ Both we have administrators, who want to get statistics for this endpoints
 
 
 ## HOWTO
-- :running_man: build
-```
-docker build . --tag=watcher:1.0
-```
+
 - :running_man: run
 ```
-docker run -it -p 8080:8080 --rm --name app-watcher watcher:1.0
+docker-compose up
 ```
 
 ```
