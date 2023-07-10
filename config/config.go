@@ -8,13 +8,13 @@ import (
 )
 
 type Config struct {
-	ServerAddress string `envconfig:"address" default:":8080"`
-	PatchFile     string `envconfig:"file" default:"site.txt"`
-	AdminKey      string `envconfig:"adminKey" default:"any-secret"`
-	DebugMod      bool   `envconfig:"debug" default:"true"`
+	ServerAddress string `envconfig:"WATCHER_PORT" default:":8080"`
+	PatchFile     string `envconfig:"WATCHER_FILE" default:"site.txt"`
+	AdminKey      string `envconfig:"WATCHER_ADMIN_KEY" default:"any-secret"`
+	DebugMod      bool   `envconfig:"WATCHER_DEBUG" default:"true"`
 
-	Timeout time.Duration `envconfig:"timeout" default:"5s"`
-	TTL     time.Duration `envconfig:"ttl" default:"20s"`
+	Timeout time.Duration `envconfig:"WATCHER_TIMEOUT" default:"5s"`
+	TTL     time.Duration `envconfig:"WATCHER_TTL" default:"20s"`
 }
 
 func New() *Config {
