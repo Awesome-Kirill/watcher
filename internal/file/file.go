@@ -20,7 +20,7 @@ func (s *File) Host(_ context.Context) ([]string, error) {
 func Load(path string, logger *zerolog.Logger) *File {
 	file, err := os.Open(path)
 	if err != nil {
-		logger.Fatal().Err(err)
+		logger.Fatal().Err(err).Msg("open file error")
 	}
 	defer file.Close()
 
@@ -32,7 +32,7 @@ func Load(path string, logger *zerolog.Logger) *File {
 	}
 
 	if err := scanner.Err(); err != nil {
-		logger.Fatal().Err(err)
+		logger.Fatal().Err(err).Msg("read file error")
 	}
 
 	return &File{
