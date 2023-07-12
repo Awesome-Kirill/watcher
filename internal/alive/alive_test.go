@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStatus_Alive(t *testing.T) {
@@ -50,12 +51,8 @@ func TestStatus_Alive(t *testing.T) {
 				client: tt.fields.client,
 			}
 			got, got1 := c.Alive(tt.args.ctx, tt.args.url)
-			if got != tt.want {
-				t.Errorf("Alive() got = %v, want %v", got, tt.want)
-			}
-			if got1 != tt.want1 {
-				t.Errorf("Alive() got1 = %v, want %v", got1, tt.want1)
-			}
+			assert.Equal(t, got, tt.want, "Alive() they should be equal")
+			assert.Equal(t, got1, tt.want1, "Alive() they should be equal")
 		})
 	}
 }
